@@ -1,6 +1,7 @@
 from icrawler.builtin import GoogleImageCrawler
 import imghdr
 from glob import glob
+from datetime import date
 
 import os
 import argparse
@@ -17,13 +18,18 @@ if __name__ == '__main__':
     parser.add_argument('--root_dir', type=str, help='Image folder to save',
                         default='download')
     args = parser.parse_args()
+    if os.path.exists(args.root_dir) is False:
+        os.makedirs(args.root_dir)
     google_crawler = GoogleImageCrawler(
                         storage={'root_dir': args.root_dir},
                         feeder_threads=8,
                         parser_threads=8,
                         downloader_threads=16
                         )
-    google_crawler.crawl(keyword=args.keyword, max_num=args.max_num)
+    google_crawler.crawl(
+                            keyword=args.keyword, max_num=args.max_num,
+                            file_idx_offset='auto'
+                        )
 
     # change extension if need
     list_file = glob(f'{args.root_dir}/*')
